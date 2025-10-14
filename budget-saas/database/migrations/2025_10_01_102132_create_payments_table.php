@@ -14,13 +14,9 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('subscription_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('provider');
             $table->decimal('amount', 10, 2);
-            $table->date('payment_date');
-            $table->enum('status', ['pending', 'completed', 'failed', 'cancelled'])->default('pending');
-            $table->string('payment_method');
-            $table->string('transaction_id')->nullable();
-            $table->text('notes')->nullable();
+            $table->string('status');
             $table->timestamps();
         });
     }
