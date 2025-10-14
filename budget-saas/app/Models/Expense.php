@@ -12,18 +12,14 @@ class Expense extends Model
 
     protected $fillable = [
         'user_id',
-        'title',
-        'description',
-        'amount',
-        'expense_date',
         'category',
-        'payment_method',
-        'receipt_url',
+        'amount',
+        'date',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
-        'expense_date' => 'date',
+        'date' => 'date',
     ];
 
     public function user(): BelongsTo
@@ -38,7 +34,7 @@ class Expense extends Model
 
     public function scopeByDateRange($query, $startDate, $endDate)
     {
-        return $query->whereBetween('expense_date', [$startDate, $endDate]);
+        return $query->whereBetween('date', [$startDate, $endDate]);
     }
 
     public function scopeByAmountRange($query, $minAmount, $maxAmount)

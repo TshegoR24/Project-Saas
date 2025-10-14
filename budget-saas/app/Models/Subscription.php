@@ -14,20 +14,14 @@ class Subscription extends Model
     protected $fillable = [
         'user_id',
         'name',
-        'description',
         'amount',
-        'frequency',
-        'start_date',
-        'end_date',
-        'is_active',
-        'category',
+        'billing_cycle',
+        'next_due_date',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'is_active' => 'boolean',
+        'next_due_date' => 'date',
     ];
 
     public function user(): BelongsTo
@@ -40,13 +34,13 @@ class Subscription extends Model
         return $this->hasMany(Payment::class);
     }
 
-    public function scopeActive($query)
+    public function scopeByBillingCycle($query, $cycle)
     {
-        return $query->where('is_active', true);
+        return $query->where('billing_cycle', $cycle);
     }
 
-    public function scopeByCategory($query, $category)
+    public function scopeDueSoon($query, $days = 7)
     {
-        return $query->where('category', $category);
+        return $query->where('next_due_date', '<=', now()->addDays($days));
     }
 }

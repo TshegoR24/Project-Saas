@@ -12,18 +12,13 @@ class Payment extends Model
 
     protected $fillable = [
         'user_id',
-        'subscription_id',
+        'provider',
         'amount',
-        'payment_date',
         'status',
-        'payment_method',
-        'transaction_id',
-        'notes',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
-        'payment_date' => 'date',
     ];
 
     public function user(): BelongsTo
@@ -31,9 +26,9 @@ class Payment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function subscription(): BelongsTo
+    public function scopeByProvider($query, $provider)
     {
-        return $this->belongsTo(Subscription::class);
+        return $query->where('provider', $provider);
     }
 
     public function scopeByStatus($query, $status)
