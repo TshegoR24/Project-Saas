@@ -93,8 +93,8 @@
                             @forelse($recentExpenses as $expense)
                                 <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                     <div>
-                                        <p class="font-medium text-gray-900 dark:text-gray-100">{{ $expense->title }}</p>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $expense->category }} • {{ $expense->expense_date->format('M d, Y') }}</p>
+                                        <p class="font-medium text-gray-900 dark:text-gray-100">{{ $expense->category }}</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $expense->date->format('M d, Y') }}</p>
                                     </div>
                                     <span class="text-lg font-semibold text-red-600">-${{ number_format($expense->amount, 2) }}</span>
                                 </div>
@@ -121,9 +121,9 @@
                                 <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                                     <div>
                                         <p class="font-medium text-gray-900 dark:text-gray-100">
-                                            {{ $payment->subscription ? $payment->subscription->name : 'Payment' }}
+                                            {{ $payment->provider }}
                                         </p>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $payment->payment_date->format('M d, Y') }}</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $payment->created_at->format('M d, Y') }}</p>
                                     </div>
                                     <span class="text-lg font-semibold text-blue-600">${{ number_format($payment->amount, 2) }}</span>
                                 </div>

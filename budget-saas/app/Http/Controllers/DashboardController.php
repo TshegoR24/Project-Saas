@@ -21,23 +21,18 @@ class DashboardController extends Controller
         
         // Get expenses for current month
         $monthlyExpenses = Expense::where('user_id', $user->id)
-            ->whereBetween('expense_date', [$currentMonth, $currentMonthEnd])
+            ->whereBetween('date', [$currentMonth, $currentMonthEnd])
             ->sum('amount');
         
-        // Get active subscriptions
-        $activeSubscriptions = Subscription::where('user_id', $user->id)
-            ->where('is_active', true)
-            ->get();
+        // Get all subscriptions (simplified - no is_active field)
+        $activeSubscriptions = Subscription::where('user_id', $user->id)->get();
         
         // Calculate monthly subscription cost
         $monthlySubscriptionCost = 0;
         foreach ($activeSubscriptions as $subscription) {
-            switch ($subscription->frequency) {
+            switch ($subscription->billing_cycle) {
                 case 'monthly':
                     $monthlySubscriptionCost += $subscription->amount;
-                    break;
-                case 'quarterly':
-                    $monthlySubscriptionCost += $subscription->amount / 3;
                     break;
                 case 'yearly':
                     $monthlySubscriptionCost += $subscription->amount / 12;
@@ -47,21 +42,20 @@ class DashboardController extends Controller
         
         // Get recent expenses
         $recentExpenses = Expense::where('user_id', $user->id)
-            ->orderBy('expense_date', 'desc')
+            ->orderBy('date', 'desc')
             ->limit(5)
             ->get();
         
-        // Get upcoming payments
+        // Get recent payments (simplified - no payment_date field)
         $upcomingPayments = Payment::where('user_id', $user->id)
             ->where('status', 'pending')
-            ->where('payment_date', '>=', Carbon::now())
-            ->orderBy('payment_date', 'asc')
+            ->orderBy('created_at', 'asc')
             ->limit(5)
             ->get();
         
         // Get expense categories for chart
         $expenseCategories = Expense::where('user_id', $user->id)
-            ->whereBetween('expense_date', [$currentMonth, $currentMonthEnd])
+            ->whereBetween('date', [$currentMonth, $currentMonthEnd])
             ->selectRaw('category, SUM(amount) as total')
             ->groupBy('category')
             ->get();

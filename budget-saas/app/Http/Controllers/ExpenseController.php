@@ -13,9 +13,7 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        $expenses = Expense::where('user_id', Auth::id())
-            ->orderBy('expense_date', 'desc')
-            ->paginate(15);
+        $expenses = Auth::user()->expenses()->latest()->paginate(15);
         
         return view('expenses.index', compact('expenses'));
     }
@@ -34,23 +32,12 @@ class ExpenseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'amount' => 'required|numeric|min:0.01',
-            'expense_date' => 'required|date',
             'category' => 'required|string|max:255',
-            'payment_method' => 'nullable|string|max:255',
+            'amount' => 'required|numeric|min:0.01',
+            'date' => 'required|date',
         ]);
 
-        Expense::create([
-            'user_id' => Auth::id(),
-            'title' => $request->title,
-            'description' => $request->description,
-            'amount' => $request->amount,
-            'expense_date' => $request->expense_date,
-            'category' => $request->category,
-            'payment_method' => $request->payment_method,
-        ]);
+        Auth::user()->expenses()->create($request->all());
 
         return redirect()->route('expenses.index')
             ->with('success', 'Expense created successfully.');
@@ -82,12 +69,9 @@ class ExpenseController extends Controller
         $this->authorize('update', $expense);
         
         $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'amount' => 'required|numeric|min:0.01',
-            'expense_date' => 'required|date',
             'category' => 'required|string|max:255',
-            'payment_method' => 'nullable|string|max:255',
+            'amount' => 'required|numeric|min:0.01',
+            'date' => 'required|date',
         ]);
 
         $expense->update($request->all());
