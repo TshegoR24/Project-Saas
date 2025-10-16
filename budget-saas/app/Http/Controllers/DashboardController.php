@@ -58,7 +58,23 @@ class DashboardController extends Controller
             ->whereBetween('date', [$currentMonth, $currentMonthEnd])
             ->selectRaw('category, SUM(amount) as total')
             ->groupBy('category')
+            ->orderBy('total', 'desc')
             ->get();
+        
+        // Get monthly spending trend (last 6 months)
+        $monthlyTrend = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $monthStart = Carbon::now()->subMonths($i)->startOfMonth();
+            $monthEnd = Carbon::now()->subMonths($i)->endOfMonth();
+            $monthExpenses = Expense::where('user_id', $user->id)
+                ->whereBetween('date', [$monthStart, $monthEnd])
+                ->sum('amount');
+            
+            $monthlyTrend[] = [
+                'month' => $monthStart->format('M Y'),
+                'amount' => $monthExpenses
+            ];
+        }
         
         return view('dashboard', compact(
             'monthlyExpenses',
@@ -66,7 +82,8 @@ class DashboardController extends Controller
             'monthlySubscriptionCost',
             'recentExpenses',
             'upcomingPayments',
-            'expenseCategories'
+            'expenseCategories',
+            'monthlyTrend'
         ));
     }
 }

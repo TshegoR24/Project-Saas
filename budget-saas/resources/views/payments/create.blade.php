@@ -19,6 +19,23 @@
                         @csrf
                         
                         <div class="grid grid-cols-1 gap-6">
+                            <!-- Subscription -->
+                            <div>
+                                <label for="subscription_id" class="block text-sm font-medium text-gray-700">Subscription (Optional)</label>
+                                <select name="subscription_id" id="subscription_id" 
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('subscription_id') border-red-500 @enderror">
+                                    <option value="">Select a subscription (optional)</option>
+                                    @foreach($subscriptions as $subscription)
+                                        <option value="{{ $subscription->id }}" {{ old('subscription_id') == $subscription->id ? 'selected' : '' }}>
+                                            {{ $subscription->name }} - ${{ number_format($subscription->amount, 2) }} ({{ ucfirst($subscription->billing_cycle) }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('subscription_id')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <div>
                                 <label for="provider" class="block text-sm font-medium text-gray-700">Payment Provider</label>
                                 <input type="text" name="provider" id="provider" value="{{ old('provider') }}" 

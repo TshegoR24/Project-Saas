@@ -76,6 +76,30 @@
                 </div>
             </div>
 
+            <!-- Expense Categories Chart -->
+            @if($expenseCategories->count() > 0)
+            <div class="mb-8 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Expense Categories (Current Month)</h3>
+                    <div class="relative h-64">
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            <!-- Monthly Spending Trend -->
+            @if($monthlyTrend && count($monthlyTrend) > 1)
+            <div class="mb-8 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Monthly Spending Trend (Last 6 Months)</h3>
+                    <div class="relative h-64">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <!-- Main Content Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Recent Expenses -->
@@ -171,4 +195,118 @@
             </div>
         </div>
     </div>
+
+    @if($expenseCategories->count() > 0)
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('expenseChart').getContext('2d');
+            const categories = @json($expenseCategories->pluck('category'));
+            const totals = @json($expenseCategories->pluck('total'));
+            
+            const colors = [
+                '#EF4444', '#F97316', '#F59E0B', '#10B981', 
+                '#06B6D4', '#8B5CF6', '#EC4899', '#6B7280'
+            ];
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        data: totals,
+                        backgroundColor: colors.slice(0, categories.length),
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    return `${context.label}: $${context.parsed.toFixed(2)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    @endif
+
+    @if($monthlyTrend && count($monthlyTrend) > 1)
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            const trendData = @json($monthlyTrend);
+            
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: trendData.map(item => item.month),
+                    datasets: [{
+                        label: 'Monthly Spending',
+                        data: trendData.map(item => item.amount),
+                        borderColor: '#EF4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#EF4444',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Spending: $${context.parsed.y.toFixed(2)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toFixed(0);
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    @endif
 </x-app-layout>

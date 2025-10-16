@@ -26,13 +26,10 @@
                                 <thead class="bg-gray-50 dark:bg-gray-700">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                            Title
+                                            Category
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                             Amount
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                            Category
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                             Date
@@ -46,27 +43,17 @@
                                     @foreach($expenses as $expense)
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                                    {{ $expense->title }}
-                                                </div>
-                                                @if($expense->description)
-                                                    <div class="text-sm text-gray-500 dark:text-gray-400">
-                                                        {{ Str::limit($expense->description, 50) }}
-                                                    </div>
-                                                @endif
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                                                    {{ $expense->category }}
+                                                </span>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <span class="text-sm font-semibold text-red-600">
                                                     -${{ number_format($expense->amount, 2) }}
                                                 </span>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
-                                                    {{ $expense->category }}
-                                                </span>
-                                            </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                {{ $expense->expense_date->format('M d, Y') }}
+                                                {{ $expense->date->format('M d, Y') }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <div class="flex space-x-2">

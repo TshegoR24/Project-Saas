@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +23,8 @@ class PaymentController extends Controller
      */
     public function create()
     {
-        return view('payments.create');
+        $subscriptions = Auth::user()->subscriptions()->get();
+        return view('payments.create', compact('subscriptions'));
     }
 
     /**
@@ -31,10 +33,16 @@ class PaymentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'subscription_id' => 'nullable|exists:subscriptions,id',
             'provider' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0',
             'status' => 'required|string|max:255',
         ]);
+
+        // Ensure the subscription belongs to the authenticated user
+        if ($request->subscription_id) {
+            $subscription = Auth::user()->subscriptions()->findOrFail($request->subscription_id);
+        }
 
         Auth::user()->payments()->create($request->all());
 
@@ -57,7 +65,8 @@ class PaymentController extends Controller
     public function edit(Payment $payment)
     {
         $this->authorize('update', $payment);
-        return view('payments.edit', compact('payment'));
+        $subscriptions = Auth::user()->subscriptions()->get();
+        return view('payments.edit', compact('payment', 'subscriptions'));
     }
 
     /**
@@ -68,10 +77,16 @@ class PaymentController extends Controller
         $this->authorize('update', $payment);
 
         $request->validate([
+            'subscription_id' => 'nullable|exists:subscriptions,id',
             'provider' => 'required|string|max:255',
             'amount' => 'required|numeric|min:0',
             'status' => 'required|string|max:255',
         ]);
+
+        // Ensure the subscription belongs to the authenticated user
+        if ($request->subscription_id) {
+            $subscription = Auth::user()->subscriptions()->findOrFail($request->subscription_id);
+        }
 
         $payment->update($request->all());
 
