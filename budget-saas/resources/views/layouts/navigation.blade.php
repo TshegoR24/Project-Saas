@@ -15,7 +15,36 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('budgets.index')" :active="request()->routeIs('budgets.*')">
+                        {{ __('Budgets') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.*')">
+                        {{ __('Expenses') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('subscriptions.index')" :active="request()->routeIs('subscriptions.*')">
+                        {{ __('Subscriptions') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('payments.index')" :active="request()->routeIs('payments.*')">
+                        {{ __('Payments') }}
+                    </x-nav-link>
                 </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <form action="{{ route('search.global') }}" method="GET" class="flex items-center">
+                    <div class="relative">
+                        <input type="text" 
+                               name="q" 
+                               placeholder="Search..."
+                               class="w-64 px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                        <button type="submit" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
             </div>
 
             <!-- Settings Dropdown -->
@@ -69,6 +98,18 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('budgets.index')" :active="request()->routeIs('budgets.*')">
+                {{ __('Budgets') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('expenses.index')" :active="request()->routeIs('expenses.*')">
+                {{ __('Expenses') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('subscriptions.index')" :active="request()->routeIs('subscriptions.*')">
+                {{ __('Subscriptions') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('payments.index')" :active="request()->routeIs('payments.*')">
+                {{ __('Payments') }}
             </x-responsive-nav-link>
         </div>
 

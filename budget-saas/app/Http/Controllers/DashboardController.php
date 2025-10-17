@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Expense;
 use App\Models\Subscription;
 use App\Models\Payment;
+use App\Models\Budget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -76,6 +77,22 @@ class DashboardController extends Controller
             ];
         }
         
+        // Get active budgets
+        $activeBudgets = Budget::where('user_id', $user->id)
+            ->active()
+            ->currentPeriod()
+            ->get();
+        
+        // Update spent amounts for budgets
+        foreach ($activeBudgets as $budget) {
+            $budget->updateSpentAmount();
+        }
+        
+        // Get budget alerts (budgets near limit or exceeded)
+        $budgetAlerts = $activeBudgets->filter(function ($budget) {
+            return $budget->is_exceeded || $budget->is_near_limit;
+        });
+        
         return view('dashboard', compact(
             'monthlyExpenses',
             'activeSubscriptions',
@@ -83,7 +100,9 @@ class DashboardController extends Controller
             'recentExpenses',
             'upcomingPayments',
             'expenseCategories',
-            'monthlyTrend'
+            'monthlyTrend',
+            'activeBudgets',
+            'budgetAlerts'
         ));
     }
 }

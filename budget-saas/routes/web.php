@@ -5,6 +5,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,6 +24,14 @@ Route::middleware('auth')->group(function () {
     Route::resource('expenses', ExpenseController::class);
     Route::resource('subscriptions', SubscriptionController::class);
     Route::resource('payments', PaymentController::class);
+    Route::resource('budgets', BudgetController::class);
+    Route::post('budgets/{budget}/toggle', [BudgetController::class, 'toggle'])->name('budgets.toggle');
+    
+    // Search and filtering routes
+    Route::get('search', [SearchController::class, 'global'])->name('search.global');
+    Route::get('expenses/filter', [SearchController::class, 'expenses'])->name('expenses.filter');
+    Route::get('expenses/export', [SearchController::class, 'exportExpenses'])->name('expenses.export');
+    Route::get('api/categories', [SearchController::class, 'getCategories'])->name('api.categories');
 });
 
 require __DIR__.'/auth.php';
