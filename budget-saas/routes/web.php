@@ -7,6 +7,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,6 +33,16 @@ Route::middleware('auth')->group(function () {
     Route::get('expenses/filter', [SearchController::class, 'expenses'])->name('expenses.filter');
     Route::get('expenses/export', [SearchController::class, 'exportExpenses'])->name('expenses.export');
     Route::get('api/categories', [SearchController::class, 'getCategories'])->name('api.categories');
+    
+    // Analytics and reporting routes
+    Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+    Route::get('analytics/trends', [AnalyticsController::class, 'getSpendingTrends'])->name('analytics.trends');
+    Route::get('analytics/categories', [AnalyticsController::class, 'getCategoryBreakdown'])->name('analytics.categories');
+    Route::get('analytics/budget-performance', [AnalyticsController::class, 'getBudgetPerformance'])->name('analytics.budget-performance');
+    Route::get('analytics/predictions', [AnalyticsController::class, 'getSpendingPredictions'])->name('analytics.predictions');
+    Route::get('analytics/expense-trends', [AnalyticsController::class, 'getExpenseTrendsByCategory'])->name('analytics.expense-trends');
+    Route::get('analytics/subscriptions', [AnalyticsController::class, 'getSubscriptionAnalysis'])->name('analytics.subscriptions');
+    Route::post('analytics/report', [AnalyticsController::class, 'generateReport'])->name('analytics.report');
 });
 
 require __DIR__.'/auth.php';

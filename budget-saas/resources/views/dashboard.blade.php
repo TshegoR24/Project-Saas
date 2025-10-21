@@ -130,6 +130,51 @@
                 </div>
             </div>
 
+            <!-- Quick Analytics Widget -->
+            <div class="mb-8 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            Quick Analytics
+                        </h3>
+                        <a href="{{ route('analytics.index') }}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 text-sm font-medium">
+                            View Full Analytics →
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Budget Performance -->
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                                {{ $activeBudgets->where('is_active', true)->count() > 0 ? 
+                                    round($activeBudgets->where('is_active', true)->avg('utilization_percentage'), 1) : 0 }}%
+                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Avg Budget Usage</div>
+                        </div>
+                        
+                        <!-- Spending Trend -->
+                        <div class="text-center">
+                            <div class="text-2xl font-bold {{ $monthlyTrend && count($monthlyTrend) >= 2 ? 
+                                ($monthlyTrend[count($monthlyTrend)-1]['amount'] > $monthlyTrend[count($monthlyTrend)-2]['amount'] ? 'text-red-600' : 'text-green-600') : 'text-gray-600' }}">
+                                @if($monthlyTrend && count($monthlyTrend) >= 2)
+                                    {{ $monthlyTrend[count($monthlyTrend)-1]['amount'] > $monthlyTrend[count($monthlyTrend)-2]['amount'] ? '↗' : '↘' }}
+                                @else
+                                    —
+                                @endif
+                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Spending Trend</div>
+                        </div>
+                        
+                        <!-- Top Category -->
+                        <div class="text-center">
+                            <div class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                {{ $expenseCategories->count() > 0 ? $expenseCategories->first()->category : 'N/A' }}
+                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Top Spending Category</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Expense Categories Chart -->
             @if($expenseCategories->count() > 0)
             <div class="mb-8 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
