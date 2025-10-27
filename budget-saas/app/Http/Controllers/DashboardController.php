@@ -6,6 +6,7 @@ use App\Models\Expense;
 use App\Models\Subscription;
 use App\Models\Payment;
 use App\Models\Budget;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -93,6 +94,16 @@ class DashboardController extends Controller
             return $budget->is_exceeded || $budget->is_near_limit;
         });
         
+        // Get recent notifications
+        $recentNotifications = Notification::where('user_id', $user->id)
+            ->latest()
+            ->limit(5)
+            ->get();
+        
+        $unreadNotificationCount = Notification::where('user_id', $user->id)
+            ->unread()
+            ->count();
+        
         return view('dashboard', compact(
             'monthlyExpenses',
             'activeSubscriptions',
@@ -102,7 +113,9 @@ class DashboardController extends Controller
             'expenseCategories',
             'monthlyTrend',
             'activeBudgets',
-            'budgetAlerts'
+            'budgetAlerts',
+            'recentNotifications',
+            'unreadNotificationCount'
         ));
     }
 }

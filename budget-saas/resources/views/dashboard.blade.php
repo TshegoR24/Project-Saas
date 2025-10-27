@@ -38,6 +38,50 @@
             </div>
             @endif
 
+            <!-- Recent Notifications -->
+            @if($recentNotifications->count() > 0)
+            <div class="mb-6 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+                            </svg>
+                            Recent Notifications
+                            @if($unreadNotificationCount > 0)
+                                <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    {{ $unreadNotificationCount }} unread
+                                </span>
+                            @endif
+                        </h3>
+                        <a href="{{ route('notifications.index') }}" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400">
+                            View all
+                        </a>
+                    </div>
+                    <div class="space-y-3">
+                        @foreach($recentNotifications as $notification)
+                            <div class="flex items-start space-x-3 p-3 {{ $notification->is_read ? 'bg-gray-50 dark:bg-gray-700' : 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800' }} rounded-lg">
+                                <div class="flex-shrink-0">
+                                    <div class="h-2 w-2 {{ $notification->is_read ? 'bg-gray-300' : 'bg-blue-500' }} rounded-full mt-2"></div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        {{ $notification->title }}
+                                    </p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                        {{ Str::limit($notification->message, 80) }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                        {{ $notification->created_at->diffForHumans() }}
+                                    </p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
