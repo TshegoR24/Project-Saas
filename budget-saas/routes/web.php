@@ -8,6 +8,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -43,6 +44,15 @@ Route::middleware('auth')->group(function () {
     Route::get('analytics/expense-trends', [AnalyticsController::class, 'getExpenseTrendsByCategory'])->name('analytics.expense-trends');
     Route::get('analytics/subscriptions', [AnalyticsController::class, 'getSubscriptionAnalysis'])->name('analytics.subscriptions');
     Route::post('analytics/report', [AnalyticsController::class, 'generateReport'])->name('analytics.report');
+    
+    // Notification routes
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('notifications/unread', [NotificationController::class, 'unread'])->name('notifications.unread');
+    Route::post('notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    Route::delete('notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::get('notifications/preferences', [NotificationController::class, 'preferences'])->name('notifications.preferences');
+    Route::post('notifications/preferences', [NotificationController::class, 'updatePreferences'])->name('notifications.preferences.update');
 });
 
 require __DIR__.'/auth.php';

@@ -65,4 +65,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(Budget::class);
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function notificationPreferences()
+    {
+        return $this->hasOne(NotificationPreference::class);
+    }
+
+    public function getNotificationPreferences()
+    {
+        return $this->notificationPreferences ?? $this->notificationPreferences()->create(
+            NotificationPreference::getDefaults()
+        );
+    }
 }

@@ -50,6 +50,11 @@
                 </form>
             </div>
 
+            <!-- Notifications -->
+            <div class="hidden sm:flex sm:items-center sm:ms-6">
+                <x-notification-bell />
+            </div>
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
@@ -68,6 +73,12 @@
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('notifications.index')">
+                            {{ __('Notifications') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('notifications.preferences')">
+                            {{ __('Notification Settings') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
